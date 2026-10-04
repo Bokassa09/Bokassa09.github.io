@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Omer Boueke | IA, Machine Learning, MLOps</title>
+<meta name="description" content="Omer Boueke, Data Scientist et ML Engineer. Teste mes projets IA en direct : churn, RAG, classification médicale. Stage Inria/INRAE, MLOps, LLM.">
+<meta property="og:title" content="Omer Boueke | IA, Machine Learning, MLOps">
+<meta property="og:description" content="Projets IA déployés à tester en direct, stage Inria/INRAE, MLOps, LLM et RAG.">
+<meta property="og:image" content="assets/photo.jpg">
+<style>
+:root{
+  --bg:#0a0f1e; --bg2:#0f1730; --card:#121b36; --card2:#17224555; --text:#e9eefc; --muted:#9db0d4;
+  --accent:#6ea0ff; --accent2:#9b7bff; --good:#35d6a0; --line:#243158; --chip:#1a2750; --chiptext:#bcd0ff;
+  --glow:0 0 0 1px #2a3a6e, 0 20px 50px -20px #4d7cff66;
+}
+:root[data-theme="light"]{
+  --bg:#f6f8fd; --bg2:#eaf0fb; --card:#ffffff; --card2:#ffffffaa; --text:#12203f; --muted:#56658a;
+  --accent:#2754d8; --accent2:#6a45e0; --good:#12906b; --line:#d8e0f2; --chip:#e6edff; --chiptext:#23408f;
+  --glow:0 0 0 1px #d5def5, 0 18px 40px -22px #2754d855;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;position:relative}
+html[lang="fr"] .en{display:none !important}
+html[lang="en"] .fr{display:none !important}
+
+/* background */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.28;mask-image:radial-gradient(ellipse at 50% 0%,#000 10%,transparent 70%)}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.38;animation:float 18s ease-in-out infinite}
+.blob.b1{width:420px;height:420px;background:var(--accent);top:-120px;left:-80px}
+.blob.b2{width:360px;height:360px;background:var(--accent2);top:240px;right:-100px;animation-delay:-6s}
+:root[data-theme="light"] .blob{opacity:.16}
+@keyframes float{50%{transform:translate(40px,30px) scale(1.08)}}
+
+/* nav */
+header.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;height:60px}
+.brand{font-weight:800;color:var(--text);letter-spacing:-.01em}
+.brand span{color:var(--accent)}
+nav.links{display:flex;gap:18px;align-items:center}
+nav.links a{color:var(--muted);font-size:14px}
+nav.links a:hover{color:var(--text)}
+.btn-s{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer}
+.btn-s:hover{border-color:var(--accent)}
+@media(max-width:760px){nav.links a.hm{display:none}}
+
+/* hero */
+.hero{padding:70px 0 40px;display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--chip);color:var(--chiptext);padding:6px 14px;border-radius:999px;font-size:14px;border:1px solid var(--line)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 var(--good);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hero h1{font-size:clamp(38px,7vw,64px);line-height:1.05;margin:18px 0 8px;letter-spacing:-.03em}
+.grad{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.typed{font-size:clamp(18px,3vw,26px);font-weight:600;min-height:1.6em;color:var(--text)}
+.typed .cur{display:inline-block;width:2px;height:1em;background:var(--accent);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.lead{color:var(--muted);max-width:56ch;margin:14px 0 24px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:12px;font-weight:600;font-size:15px;border:1px solid var(--line);color:var(--text);background:var(--card);cursor:pointer;transition:.18s}
+.btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:0;color:#fff}
+.btn.good{border-color:var(--good);color:var(--good)}
+
+.portrait{position:relative;width:min(340px,80vw);aspect-ratio:1;margin:auto}
+.ring{position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--good),var(--accent));animation:spin 8s linear infinite;filter:blur(1px)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.portrait img{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);border-radius:50%;object-fit:cover;border:5px solid var(--bg)}
+.float-chip{position:absolute;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px;box-shadow:var(--glow);animation:bob 5s ease-in-out infinite;white-space:nowrap}
+.float-chip b{display:block;font-size:18px;color:var(--accent)}
+.fc1{top:2%;left:-14%}.fc2{top:44%;right:-16%;animation-delay:-1.6s}.fc3{bottom:0;left:-6%;animation-delay:-3.2s}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:36px}.portrait{order:-1;width:230px}.fc1{left:-26%}.fc2{right:-30%}.fc3{left:-20%}}
+
+/* metrics */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:10px 0 0}
+.metric{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center;box-shadow:var(--glow)}
+.metric .n{font-size:38px;font-weight:800;letter-spacing:-.02em}
+.metric .l{color:var(--muted);font-size:13px}
+
+/* sections */
+section{padding:64px 0}
+h2{font-size:clamp(26px,4vw,36px);margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:0 0 30px;max-width:62ch}
+.eyebrow{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.meta{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{background:var(--chip);color:var(--chiptext);padding:3px 11px;border-radius:999px;font-size:13px;border:1px solid transparent;transition:.15s}
+button.chip{cursor:pointer;font:inherit;font-size:13px}
+button.chip:hover{border-color:var(--accent)}
+button.chip.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+ul{margin:10px 0 0;padding-left:20px}li{margin:5px 0}
+.reveal{opacity:0;transform:translateY(22px);transition:.7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.blob,.ring,.float-chip,.dot{animation:none}}
+
+/* experience */
+.exp{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+@media(max-width:820px){.exp{grid-template-columns:1fr}}
+.xhead{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+h3{margin:0;font-size:19px}
+.race{margin-top:18px;display:grid;gap:10px}
+.race .row{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.bar{height:26px;border-radius:8px;background:var(--bg2);overflow:hidden;position:relative}
+.bar i{display:block;height:100%;width:0;border-radius:8px;transition:width 1.6s cubic-bezier(.2,.7,.2,1);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-style:normal;font-weight:700;font-size:12px;color:#fff}
+.bar i.slow{background:#e0556a}
+.bar i.fast{background:linear-gradient(90deg,var(--good),var(--accent))}
+.race.go .slow{width:100%}.race.go .fast{width:4.5%;min-width:62px}
+.quote{margin-top:14px;padding:10px 14px;border-left:3px solid var(--accent2);background:var(--bg2);border-radius:8px;font-size:15px}
+
+/* projects */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.proj{padding:0;overflow:hidden;display:flex;flex-direction:column;transition:.25s;position:relative}
+.proj:hover{transform:translateY(-4px);box-shadow:var(--glow)}
+.proj.dim{opacity:.35;filter:saturate(.4)}
+.proj.hit{border-color:var(--accent);box-shadow:var(--glow)}
+.prev{position:relative;height:170px;background:linear-gradient(135deg,#16224a,#243a86 55%,#4a3aa8);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.prev img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.prev .mini{position:relative;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;padding:14px;z-index:1}
+.prev .mini span{background:#ffffff1f;border:1px solid #ffffff33;color:#fff;padding:3px 9px;border-radius:8px;font-size:12px;backdrop-filter:blur(4px)}
+.prev .mini em{color:#ffffffaa;font-style:normal}
+.live{position:absolute;top:12px;left:12px;z-index:2;background:#0b1a14cc;color:#35d6a0;border:1px solid #35d6a0;border-radius:999px;font-size:12px;font-weight:700;padding:3px 10px;display:flex;gap:6px;align-items:center}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:#35d6a0;animation:pulse 2s infinite}
+.prev .play{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#0008;opacity:0;transition:.2s;cursor:pointer;border:0;color:#fff;font-weight:700;font-size:16px;gap:10px}
+.proj:hover .prev .play{opacity:1}
+.play svg{width:46px;height:46px}
+.pbody{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
+.ptag{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.pbody h3{margin:4px 0 8px}
+.pk{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:14.5px;margin:6px 0 0}
+.pk b{color:var(--accent)}
+.res{margin-top:12px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--text);font-size:14px;border:1px solid color-mix(in srgb,var(--good) 40%,transparent)}
+.pact{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:16px}
+.pact .btn{padding:8px 14px;font-size:14px;border-radius:10px}
+.note{font-size:13px;color:var(--muted);margin-top:16px}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px;background:#050914d9;backdrop-filter:blur(6px)}
+.modal.open{display:flex}
+.mbox{width:min(1100px,100%);height:min(88vh,860px);background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px #000a}
+.mtop{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mtop h4{margin:0;font-size:16px;flex:1;min-width:140px}
+.tabs{display:flex;gap:6px}
+.tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-size:14px}
+.tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.xbtn{border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer}
+.mbody{flex:1;position:relative;min-height:0}
+.pane{position:absolute;inset:0;display:none;overflow:auto}
+.pane.on{display:block}
+.frame{width:100%;flex:1;min-height:0;border:0;background:#fff}
+#paneDemo.on{display:flex;flex-direction:column;overflow:hidden}
+.hintbar{padding:10px 16px;background:color-mix(in srgb,var(--accent) 14%,var(--card));border-bottom:1px solid var(--line);font-size:14px}
+.hintbar b{color:var(--accent)}
+.prev.has .mini{display:none}
+.prev img{object-position:top left}
+.loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--card);text-align:center;padding:20px;transition:.3s}
+.loading.hide{opacity:0;pointer-events:none}
+.spin{width:42px;height:42px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--accent);animation:spin .9s linear infinite}
+.fallback{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted);box-shadow:var(--glow);white-space:nowrap}
+.arch{padding:26px 26px 30px}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:6px 0 20px}
+.node{background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:10px 14px;cursor:pointer;font-size:14px;text-align:left;position:relative;transition:.15s}
+.node:hover,.node.on{border-color:var(--accent);box-shadow:var(--glow)}
+.node.on{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 28%,transparent),color-mix(in srgb,var(--accent2) 22%,transparent))}
+.node small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.arrow{align-self:center;color:var(--muted)}
+.detail{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-height:84px}
+.detail b{color:var(--accent)}
+
+/* skills */
+.sk{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.sk .card h3{font-size:16px}
+.hint{font-size:13px;color:var(--muted);margin:-18px 0 22px}
+
+/* education */
+.tl{border-left:2px solid var(--line);margin-left:8px;padding-left:24px;display:grid;gap:16px}
+.tl .card{position:relative}
+.tl .card::before{content:"";position:absolute;left:-33px;top:26px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--bg)}
+
+footer{padding:60px 0 70px;text-align:center;border-top:1px solid var(--line)}
+footer .cta{justify-content:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);padding:8px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:200}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="#top">Omer<span>.</span>Boueke</a>
+    <nav class="links">
+      <a class="hm" href="#experience"><span class="fr">Expérience</span><span class="en">Experience</span></a>
+      <a class="hm" href="#projets"><span class="fr">Démos</span><span class="en">Demos</span></a>
+      <a class="hm" href="#competences"><span class="fr">Compétences</span><span class="en">Skills</span></a>
+      <a class="hm" href="#formation"><span class="fr">Formation</span><span class="en">Education</span></a>
+      <a href="#contact">Contact</a>
+      <button class="btn-s" id="langBtn" aria-label="Langue / Language">EN</button>
+      <button class="btn-s" id="themeBtn" aria-label="Thème / Theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <span class="pill"><span class="dot"></span>
+        <span class="fr">Disponible : alternance, CDD ou CDI</span>
+        <span class="en">Available: apprenticeship, fixed-term or permanent</span></span>
+      <h1>Omer <span class="grad">Boueke</span></h1>
+      <div class="typed"><span id="typed"></span><span class="cur"></span></div>
+      <p class="lead fr">Je transforme des données en systèmes IA qui tournent en production. Diplômé du Master Informatique HPC / IA, ancien stagiaire Inria / INRAE, étudiant en Master 2 Data Science et IA. Ici, tu peux <b>tester mes projets en direct</b>.</p>
+      <p class="lead en">I turn data into AI systems that run in production. Graduate of the HPC / AI Computer Science Master, former Inria / INRAE intern, Master 2 student in Data Science and AI. Here, you can <b>try my projects live</b>.</p>
+      <div class="cta">
+        <a class="btn primary" href="#projets">▶ <span class="fr">Tester les démos</span><span class="en">Try the live demos</span></a>
+        <a class="btn" href="assets/CV_Omer_Boueke.pdf" download><span class="fr">Télécharger mon CV</span><span class="en">Download my CV</span></a>
+        <a class="btn" href="https://github.com/Bokassa09" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/omer-bokassa-boueke" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div class="portrait">
+      <div class="ring"></div>
+      <img src="assets/photo.jpg" alt="Portrait d'Omer Boueke">
+      <div class="float-chip fc1"><b>25×</b><span class="fr">plus rapide (HPC)</span><span class="en">faster (HPC)</span></div>
+      <div class="float-chip fc2"><b><span class="fr">87,5 %</span><span class="en">87.5%</span></b>ROC-AUC</div>
+      <div class="float-chip fc3"><b>100 %</b><span class="fr">recall classe maligne</span><span class="en">malignant recall</span></div>
+    </div>
+  </div>
+
+  <div class="metrics reveal" id="metrics">
+    <div class="metric"><div class="n" data-to="25" data-suf="×">0</div><div class="l"><span class="fr">gain de temps sur le pipeline Inria / INRAE</span><span class="en">speed-up on the Inria / INRAE pipeline</span></div></div>
+    <div class="metric"><div class="n" data-to="87.5" data-dec="1" data-suf=" %">0</div><div class="l"><span class="fr">ROC-AUC, prédiction du churn</span><span class="en">ROC-AUC, churn prediction</span></div></div>
+    <div class="metric"><div class="n" data-to="6.1" data-dec="1" data-pre="+" data-suf=" pts">0</div><div class="l"><span class="fr">d'accuracy avec 2 % de labels</span><span class="en">accuracy with only 2% labels</span></div></div>
+    <div class="metric"><div class="n" data-to="3">0</div><div class="l"><span class="fr">projets IA déployés en ligne</span><span class="en">AI projects deployed online</span></div></div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="eyebrow"><span class="fr">Expérience</span><span class="en">Experience</span></div>
+    <h2><span class="fr">De la recherche appliquée à la performance</span><span class="en">From applied research to performance</span></h2>
+    <p class="sub fr">Un stage de 6 mois à Inria / INRAE sur des données scientifiques réelles.</p>
+    <p class="sub en">A 6-month internship at Inria / INRAE on real scientific data.</p>
+    <div class="exp">
+      <div class="card reveal">
+        <div class="xhead"><h3><span class="fr">Stagiaire Data Science &amp; Machine Learning</span><span class="en">Data Science &amp; Machine Learning Intern</span></h3><span class="meta"><span class="fr">Fév. à août 2026</span><span class="en">Feb. to Aug. 2026</span></span></div>
+        <div class="meta">Inria / INRAE · Rennes</div>
+        <ul class="fr">
+          <li>Pipeline ML pour l'analyse d'aléas climatiques : collecte et préparation de données, prétraitement, modélisation supervisée et non supervisée.</li>
+          <li>Suivi des expérimentations avec MLflow (Tracking et Model Registry), pipeline documenté et reproductible.</li>
+          <li>Parallélisation HPC / SLURM du pipeline.</li>
+        </ul>
+        <ul class="en">
+          <li>ML pipeline for climate hazard analysis: data collection and preparation, preprocessing, supervised and unsupervised modelling.</li>
+          <li>Experiment tracking with MLflow (Tracking and Model Registry), documented and reproducible pipeline.</li>
+          <li>HPC / SLURM parallelisation of the pipeline.</li>
+        </ul>
+        <div class="quote fr">Résultats salués oralement par les équipes Inria et INRAE lors de ma présentation finale.</div>
+        <div class="quote en">Results praised verbally by the Inria and INRAE teams during my final presentation.</div>
+        <div class="chips"><span class="chip">Python</span><span class="chip">Scikit-learn</span><span class="chip">MLflow</span><span class="chip">Pandas</span><span class="chip">Git</span><span class="chip">HPC / SLURM</span></div>
+      </div>
+      <div class="card reveal" id="raceCard">
+        <h3><span class="fr">Temps d'exécution</span><span class="en">Execution time</span></h3>
+        <div class="meta"><span class="fr">Avant et après parallélisation HPC / SLURM</span><span class="en">Before and after HPC / SLURM parallelisation</span></div>
+        <div class="race" id="race">
+          <div class="row"><span class="fr">Avant</span><span class="en">Before</span><div class="bar"><i class="slow">3 h</i></div></div>
+          <div class="row"><span class="fr">Après</span><span class="en">After</span><div class="bar"><i class="fast">7 min</i></div></div>
+        </div>
+        <p style="margin:16px 0 0;font-size:28px;font-weight:800" class="grad">25× <span style="font-size:15px;font-weight:600" class="fr">plus rapide</span><span style="font-size:15px;font-weight:600" class="en">faster</span></p>
+        <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+        <h3 style="font-size:16px"><span class="fr">Stagiaire Deep Learning</span><span class="en">Deep Learning Intern</span></h3>
+        <div class="meta">LAMPS · <span class="fr">Université de Perpignan, mai à juil. 2025</span><span class="en">University of Perpignan, May to Jul. 2025</span></div>
+        <p class="fr" style="font-size:14.5px;margin:8px 0 0">Module Python de différentiation automatique (forward et backward) par surcharge d'opérateurs, validé face à JAX, PyTorch et TensorFlow.</p>
+        <p class="en" style="font-size:14.5px;margin:8px 0 0">Python automatic differentiation module (forward and backward) via operator overloading, validated against JAX, PyTorch and TensorFlow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETS -->
+<section id="projets">
+  <div class="wrap">
+    <div class="eyebrow"><span class="fr">Démos en direct</span><span class="en">Live demos</span></div>
+    <h2><span class="fr">Ne me crois pas sur parole, teste.</span><span class="en">Don't take my word for it, try it.</span></h2>
+    <p class="sub fr">Chaque projet marqué LIVE s'ouvre ici, dans la page. Clique sur « Tester en direct » ou explore l'architecture étape par étape.</p>
+    <p class="sub en">Every project marked LIVE opens right here on the page. Click "Try it live" or explore the architecture step by step.</p>
+    <div class="pgrid" id="pgrid"></div>
+    <p class="note fr">Les démos hébergées sur Render (offre gratuite) peuvent mettre 30 à 60 secondes à se réveiller au premier clic. C'est normal.</p>
+    <p class="note en">Demos hosted on Render (free tier) can take 30 to 60 seconds to wake up on the first click. This is expected.</p>
+  </div>
+</section>
+
+<!-- COMPETENCES -->
+<section id="competences">
+  <div class="wrap">
+    <div class="eyebrow"><span class="fr">Compétences</span><span class="en">Skills</span></div>
+    <h2><span class="fr">Ce que je maîtrise, et où je l'ai utilisé</span><span class="en">What I use, and where I used it</span></h2>
+    <p class="sub hint fr" style="margin-bottom:24px">Clique sur une compétence pour voir les projets qui l'utilisent.</p>
+    <p class="sub hint en" style="margin-bottom:24px">Click a skill to see which projects use it.</p>
+    <div class="sk" id="sk"></div>
+  </div>
+</section>
+
+<!-- FORMATION -->
+<section id="formation">
+  <div class="wrap">
+    <div class="eyebrow"><span class="fr">Formation</span><span class="en">Education</span></div>
+    <h2><span class="fr">Parcours</span><span class="en">Background</span></h2>
+    <div class="tl" style="margin-top:26px">
+      <div class="card reveal">
+        <div class="xhead"><h3><span class="fr">Master 2 Mathématiques et Informatique (MIASHS)</span><span class="en">Master 2 Mathematics and Computer Science (MIASHS)</span></h3><span class="meta"><span class="fr">Sept. 2026, en cours</span><span class="en">Sept. 2026, ongoing</span></span></div>
+        <div class="meta"><span class="fr">Université de Montpellier · Data Science et Intelligence Artificielle</span><span class="en">University of Montpellier · Data Science and Artificial Intelligence</span></div>
+        <p class="fr" style="margin:10px 0 0">IA générative, LLM, Transformers, vision par ordinateur, Machine Learning et Deep Learning avancés, Big Data avec Apache Spark, séries temporelles, analyse de données textuelles.</p>
+        <p class="en" style="margin:10px 0 0">Generative AI, LLM, Transformers, computer vision, advanced Machine Learning and Deep Learning, Big Data with Apache Spark, time series, text data analysis.</p>
+      </div>
+      <div class="card reveal">
+        <div class="xhead"><h3><span class="fr">Master Informatique, parcours HPC / IA</span><span class="en">Master in Computer Science, HPC / AI track</span></h3><span class="meta"><span class="fr">2024 à 2026</span><span class="en">2024 to 2026</span></span></div>
+        <div class="meta"><span class="fr">Université de Perpignan · 14,70/20 · Mention Bien · 2e de promotion</span><span class="en">University of Perpignan · 14.70/20 · Honours (Mention Bien) · 2nd in class</span></div>
+        <p class="fr" style="margin:10px 0 0">Machine Learning, NLP, vision par ordinateur, Transformers, calcul distribué, HPC / SLURM, Big Data (Spark, MongoDB), Deep Learning.</p>
+        <p class="en" style="margin:10px 0 0">Machine Learning, NLP, computer vision, Transformers, distributed computing, HPC / SLURM, Big Data (Spark, MongoDB), Deep Learning.</p>
+      </div>
+      <div class="card reveal">
+        <div class="xhead"><h3><span class="fr">Licence Mathématiques</span><span class="en">Bachelor in Mathematics</span></h3><span class="meta"><span class="fr">2021 à 2024</span><span class="en">2021 to 2024</span></span></div>
+        <div class="meta"><span class="fr">Université de Montpellier</span><span class="en">University of Montpellier</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <h2><span class="fr">Travaillons ensemble</span><span class="en">Let's work together</span></h2>
+    <p class="sub fr" style="margin:6px auto 22px">Alternance, CDD ou CDI en IA, Machine Learning, MLOps ou Data Science. Mobilité France entière.</p>
+    <p class="sub en" style="margin:6px auto 22px">Apprenticeship, fixed-term or permanent roles in AI, Machine Learning, MLOps or Data Science. Open to relocation across France.</p>
+    <div class="cta">
+      <a class="btn primary" href="mailto:bouekeomerbocassa@gmail.com">✉ Email</a>
+      <button class="btn" id="copyMail"><span class="fr">Copier l'email</span><span class="en">Copy email</span></button>
+      <a class="btn" href="https://www.linkedin.com/in/omer-bokassa-boueke" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/Bokassa09" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="assets/CV_Omer_Boueke.pdf" download>CV (PDF)</a>
+    </div>
+    <p class="meta" style="margin-top:30px">© 2026 Omer Boueke</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div class="mtop">
+      <h4 id="mTitle"></h4>
+      <div class="tabs">
+        <button class="tab" data-pane="demo"><span class="fr">Démo en direct</span><span class="en">Live demo</span></button>
+        <button class="tab" data-pane="arch"><span class="fr">Architecture</span><span class="en">Architecture</span></button>
+      </div>
+      <a class="xbtn" id="mOpen" target="_blank" rel="noopener">↗ <span class="fr">Nouvel onglet</span><span class="en">New tab</span></a>
+      <button class="xbtn" id="mClose" aria-label="Fermer">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="pane" id="paneDemo">
+        <div class="hintbar" id="hintbar"></div>
+        <iframe class="frame" id="frame" title="Demo" loading="lazy"></iframe>
+        <div class="loading" id="loading">
+          <div class="spin"></div>
+          <div><b class="fr">Chargement de la démo…</b><b class="en">Loading the demo…</b></div>
+          <div class="meta fr">Le serveur gratuit peut avoir besoin de 30 à 60 secondes pour se réveiller.</div>
+          <div class="meta en">The free server may need 30 to 60 seconds to wake up.</div>
+          <a class="btn" id="mOpen2" target="_blank" rel="noopener"><span class="fr">Ouvrir dans un nouvel onglet</span><span class="en">Open in a new tab</span></a>
+        </div>
+        <div class="fallback" id="fb"><span class="fr">La démo ne s'affiche pas ? Utilise « Nouvel onglet ».</span><span class="en">Demo not showing? Use "New tab".</span></div>
+      </div>
+      <div class="pane arch" id="paneArch">
+        <div class="eyebrow"><span class="fr">Clique sur une étape</span><span class="en">Click a step</span></div>
+        <div class="flow" id="flow"></div>
+        <div class="detail" id="detail"></div>
+        <div class="chips" id="archChips"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var root=document.documentElement;
+function sg(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function ss(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function L(o){return (typeof o==='string')?o:o[root.lang==='en'?'en':'fr']}
+
+/* ---------- DATA ---------- */
+var P=[
+ {id:'churn',tag:'MLOps · LLM',year:2026,title:'Customer Retention Intelligence Platform',
+  live:'https://customer-churn-platform-1-zeg0.onrender.com',img:'assets/churn.png',
+  mini:['CatBoost','SHAP','Kedro','MLflow','FastAPI','Dash','Groq LLM'],
+  prob:{fr:'Prédire quels clients bancaires vont partir, comprendre pourquoi, et rendre le résultat exploitable par des équipes métier.',en:'Predict which bank customers will churn, understand why, and make the output usable by business teams.'},
+  app:{fr:'Pipeline Kedro, CatBoost optimisé avec Optuna, explicabilité SHAP en langage naturel, recommandations générées par un LLM (Groq), API FastAPI et dashboard Dash.',en:'Kedro pipeline, CatBoost tuned with Optuna, SHAP explainability in natural language, LLM-generated recommendations (Groq), FastAPI API and Dash dashboard.'},
+  res:{fr:'ROC-AUC de 87,5 %, Recall 69 %, F1 61 %, sur 10 000 clients. Déployé sur Render.',en:'87.5% ROC-AUC, 69% Recall, 61% F1, on 10,000 customers. Deployed on Render.'},
+  hint:{fr:'<b>Comment tester :</b> renseigne les informations d\'un client (âge, solde, pays, nombre de produits…) puis clique sur « Analyser le client ». Le modèle estime le risque de départ et l\'explique avec SHAP.',en:'<b>How to test:</b> fill in a customer\'s details (age, balance, country, number of products…) then click "Analyser le client". The model estimates churn risk and explains it with SHAP.'},
+  tags:['CatBoost','Optuna','SHAP','Kedro','MLflow','FastAPI','Docker','Groq','Dash','CI/CD','LLM','Python'],
+  gh:'https://github.com/Bokassa09/customer-churn-platform',
+  flow:[
+   {k:{fr:'Données',en:'Data'},t:{fr:'Données clients bancaires',en:'Bank customer data'},d:{fr:'Analyse exploratoire (EDA) puis préparation des données.',en:'Exploratory data analysis (EDA) then data preparation.'}},
+   {k:'Kedro',t:{fr:'Pipeline reproductible',en:'Reproducible pipeline'},d:{fr:'Chaque étape est chaînée de bout en bout, automatisée et documentée.',en:'Every step is chained end to end, automated and documented.'}},
+   {k:'CatBoost',t:'+ Optuna',d:{fr:'Modèle optimisé par recherche d\'hyperparamètres. <b>ROC-AUC de 87,5 %.</b>',en:'Model tuned through hyperparameter search. <b>87.5% ROC-AUC.</b>'}},
+   {k:'SHAP',t:{fr:'Explicabilité',en:'Explainability'},d:{fr:'Les facteurs de départ de chaque client sont expliqués en langage naturel.',en:'Each customer\'s churn drivers are explained in natural language.'}},
+   {k:'LLM Groq',t:{fr:'Recommandations',en:'Recommendations'},d:{fr:'Des recommandations personnalisées sont générées par un LLM via l\'API Groq.',en:'Personalised recommendations are generated by an LLM through the Groq API.'}},
+   {k:'MLflow',t:'Model Registry',d:{fr:'Tracking des expériences et passage Staging vers Production.',en:'Experiment tracking and Staging to Production promotion.'}},
+   {k:'FastAPI + Dash',t:{fr:'API et dashboard',en:'API and dashboard'},d:{fr:'Service de prédiction en temps réel et dashboard pour les équipes métier.',en:'Real-time prediction service and dashboard for business teams.'}},
+   {k:'Docker',t:'CI/CD · Render',d:{fr:'Conteneurisé, CI/CD GitHub Actions, déployé sur Render.',en:'Containerised, GitHub Actions CI/CD, deployed on Render.'}}]},
+ {id:'cancer',tag:'MLOps · Semi-supervised',year:2026,title:'Breast Cancer Classifier',
+  live:'https://bokassa09-breast-cancer-api.hf.space/docs',img:'assets/cancer.png',
+  mini:['Self-Training','MLflow','FastAPI','SQLite','GitHub Actions','HF Spaces'],
+  prob:{fr:'Entraîner un classifieur médical performant alors que seulement 2 % des données sont étiquetées.',en:'Train a strong medical classifier when only 2% of the data is labelled.'},
+  app:{fr:'Self-Training semi-supervisé, 7 runs suivis avec MLflow, Model Registry (Staging vers Production). API FastAPI avec stockage SQLite des prédictions en temps réel, CI/CD avec pytest.',en:'Semi-supervised Self-Training, 7 runs tracked with MLflow, Model Registry (Staging to Production). FastAPI API with real-time SQLite storage of predictions, CI/CD with pytest.'},
+  res:{fr:'+6,1 points d\'accuracy, Recall de 100 % sur la classe maligne.',en:'+6.1 accuracy points, 100% Recall on the malignant class.'},
+  tags:['Scikit-learn','MLflow','FastAPI','Docker','SQLite','SQL','GitHub Actions','pytest','CI/CD','Hugging Face Spaces','Python'],
+  gh:'https://github.com/Bokassa09/breast-cancer-api',
+  hint:{fr:'<b>Comment tester :</b> interface Swagger. Déplie un endpoint, clique sur « Try it out », renseigne les valeurs puis « Execute » pour envoyer une vraie requête à l\'API.',en:'<b>How to test:</b> Swagger interface. Expand an endpoint, click "Try it out", fill in the values then "Execute" to send a real request to the API.'},
+  flow:[
+   {k:{fr:'Données',en:'Data'},t:{fr:'2 % étiquetées',en:'2% labelled'},d:{fr:'Seulement 2 % des données ont un label : le cœur du problème.',en:'Only 2% of the data has a label: the core of the problem.'}},
+   {k:'Self-Training',t:{fr:'Semi-supervisé',en:'Semi-supervised'},d:{fr:'Le modèle s\'entraîne sur les labels existants puis étiquette le reste. <b>+6,1 points d\'accuracy, Recall de 100 % sur la classe maligne</b> (aucun cas malin non détecté).',en:'The model trains on existing labels then labels the rest. <b>+6.1 accuracy points, 100% Recall on the malignant class</b> (no malignant case missed).'}},
+   {k:'MLflow',t:{fr:'7 runs suivis',en:'7 tracked runs'},d:{fr:'Chaque expérimentation est tracée et comparable.',en:'Every experiment is tracked and comparable.'}},
+   {k:'Registry',t:'Staging → Production',d:{fr:'Gestion du cycle de vie du modèle via le Model Registry.',en:'Model lifecycle managed through the Model Registry.'}},
+   {k:'FastAPI',t:'+ SQLite',d:{fr:'API REST. Les prédictions sont stockées en temps réel dans SQLite.',en:'REST API. Predictions are stored in real time in SQLite.'}},
+   {k:'GitHub Actions',t:'pytest',d:{fr:'Tests automatisés à chaque modification du code.',en:'Automated tests on every code change.'}},
+   {k:'Hugging Face',t:'Spaces · Docker',d:{fr:'Déploiement en ligne, démo accessible publiquement.',en:'Deployed online, publicly accessible demo.'}}]},
+ {id:'rag',tag:'LLM · RAG · Agents',year:2026,title:'RAG Assistant : LangChain, LangGraph & Groq',
+  live:'https://rag-assistant-dkc1.onrender.com',img:'assets/rag.png',
+  mini:['LangGraph','ChromaDB','HuggingFace','Groq','Streamlit'],
+  prob:{fr:'Intégrer un LLM dans une application documentaire en limitant les hallucinations, et mesurer la qualité des réponses.',en:'Integrate an LLM into a document application while limiting hallucinations, and measure answer quality.'},
+  app:{fr:'Pipeline RAG agentique avec LangGraph (3 nœuds), ChromaDB, embeddings HuggingFace, LLM Groq, interface Streamlit.',en:'Agentic RAG pipeline with LangGraph (3 nodes), ChromaDB, HuggingFace embeddings, Groq LLM, Streamlit UI.'},
+  res:{fr:'Évaluation maison : Faithfulness 0,67, Answer Relevancy 0,93.',en:'In-house evaluation: Faithfulness 0.67, Answer Relevancy 0.93.'},
+  hint:{fr:'<b>Comment tester :</b> téléverse un PDF (contrat, rapport, cours…) dans la barre latérale, attends le traitement, puis pose tes questions sur le document.',en:'<b>How to test:</b> upload a PDF (contract, report, course…) in the sidebar, wait for processing, then ask questions about the document.'},
+  tags:['LangChain','LangGraph','Groq','ChromaDB','HuggingFace','Streamlit','Docker','RAG','LLM','NLP','Python'],
+  gh:'https://github.com/Bokassa09/rag-assistant',
+  flow:[
+   {k:{fr:'Question',en:'Question'},t:{fr:'Utilisateur',en:'User'},d:{fr:'L\'utilisateur pose une question dans l\'interface Streamlit.',en:'The user asks a question in the Streamlit interface.'}},
+   {k:'LangGraph',t:'analyze_question',d:{fr:'Premier nœud : analyse la question et décide de la route à suivre.',en:'First node: analyses the question and decides which route to take.'}},
+   {k:'ChromaDB',t:'retrieve_and_answer',d:{fr:'Deuxième nœud : retrouve les passages pertinents (embeddings HuggingFace, base vectorielle ChromaDB) puis génère la réponse avec le LLM Groq.',en:'Second node: retrieves relevant passages (HuggingFace embeddings, ChromaDB vector store) then generates the answer with the Groq LLM.'}},
+   {k:'handle_off_topic',t:{fr:'Hors sujet',en:'Off-topic'},d:{fr:'Troisième nœud : gère les questions hors du périmètre documentaire.',en:'Third node: handles questions outside the document scope.'}},
+   {k:{fr:'Évaluation',en:'Evaluation'},t:'Faithfulness · Relevancy',d:{fr:'Évaluation maison de la qualité : <b>Faithfulness 0,67, Answer Relevancy 0,93</b>.',en:'In-house quality evaluation: <b>Faithfulness 0.67, Answer Relevancy 0.93</b>.'}},
+   {k:'Docker',t:'Render',d:{fr:'Conteneurisé et déployé sur Render.',en:'Containerised and deployed on Render.'}}]},
+ {id:'bench',tag:'Deep Learning',year:2026,title:{fr:'Benchmark d\'architectures Deep Learning',en:'Deep Learning architecture benchmark'},
+  mini:['CNN','LSTM','Transformer','Autoencoder'],
+  prob:{fr:'Face à un problème de données, quelle architecture choisir et comment documenter ce choix pour qu\'une équipe puisse le réutiliser ?',en:'Given a data problem, which architecture to pick, and how to document the choice so a team can reuse it?'},
+  app:{fr:'Comparaison de 4 architectures dans des conditions identiques, évaluation MSE / MAE, analyse des forces et limites.',en:'Comparison of 4 architectures under identical conditions, MSE / MAE evaluation, strengths and limits analysis.'},
+  res:{fr:'Guide réutilisable pour orienter les choix techniques.',en:'Reusable guide to steer technical choices.'},
+  tags:['PyTorch','TensorFlow','Transformers','Scikit-learn','Deep Learning','Python'],
+  gh:'https://github.com/Bokassa09',
+  flow:[
+   {k:{fr:'Données',en:'Data'},t:{fr:'Même jeu de données',en:'Same dataset'},d:{fr:'Conditions expérimentales identiques pour toutes les architectures.',en:'Identical experimental conditions for every architecture.'}},
+   {k:'CNN',t:'Architecture 1',d:{fr:'Entraînée et évaluée dans le même cadre.',en:'Trained and evaluated in the same setting.'}},
+   {k:'LSTM',t:'Architecture 2',d:{fr:'Entraînée et évaluée dans le même cadre.',en:'Trained and evaluated in the same setting.'}},
+   {k:'Transformer',t:'Architecture 3',d:{fr:'Entraînée et évaluée dans le même cadre.',en:'Trained and evaluated in the same setting.'}},
+   {k:'Autoencoder',t:'Architecture 4',d:{fr:'Entraînée et évaluée dans le même cadre.',en:'Trained and evaluated in the same setting.'}},
+   {k:'MSE / MAE',t:{fr:'Évaluation',en:'Evaluation'},d:{fr:'Comparaison quantitative et analyse des forces et limites selon le contexte.',en:'Quantitative comparison and analysis of strengths and limits by context.'}},
+   {k:{fr:'Guide',en:'Guide'},t:{fr:'Réutilisable',en:'Reusable'},d:{fr:'Documentation structurée pour qu\'une équipe réutilise le choix d\'architecture.',en:'Structured documentation so a team can reuse the architecture choice.'}}]},
+ {id:'pneu',tag:{fr:'Computer Vision · IA médicale',en:'Computer Vision · Medical AI'},year:2025,title:{fr:'Détection de pneumonie par CNN',en:'Pneumonia detection with a CNN'},
+  mini:['CNN','TensorFlow','Keras','OpenCV'],
+  prob:{fr:'Classer des radiographies thoraciques malgré un déséquilibre de classes.',en:'Classify chest X-rays despite class imbalance.'},
+  app:{fr:'Traitement du déséquilibre de classes, architecture CNN optimisée (TensorFlow, Keras, OpenCV).',en:'Class imbalance handling, optimised CNN architecture (TensorFlow, Keras, OpenCV).'},
+  res:{fr:'Note de 16/20 devant jury.',en:'Graded 16/20 in front of a jury.'},
+  tags:['TensorFlow','Keras','OpenCV','CNN','Computer Vision','Deep Learning','Python'],
+  gh:'https://github.com/Bokassa09',
+  flow:[
+   {k:{fr:'Images',en:'Images'},t:{fr:'Radiographies thoraciques',en:'Chest X-rays'},d:{fr:'Classification d\'images médicales.',en:'Medical image classification.'}},
+   {k:'OpenCV',t:{fr:'Traitement d\'images',en:'Image processing'},d:{fr:'Manipulation des images avec OpenCV.',en:'Image handling with OpenCV.'}},
+   {k:{fr:'Déséquilibre',en:'Imbalance'},t:{fr:'Gestion des classes',en:'Class handling'},d:{fr:'Résolution du déséquilibre entre classes.',en:'Handling the imbalance between classes.'}},
+   {k:'CNN',t:'TensorFlow · Keras',d:{fr:'Architecture CNN optimisée.',en:'Optimised CNN architecture.'}},
+   {k:{fr:'Résultat',en:'Result'},t:'16/20',d:{fr:'<b>Note de 16/20 devant jury.</b>',en:'<b>Graded 16/20 in front of a jury.</b>'}}]}
+];
+
+var SK=[
+ {t:'Machine Learning & Data Science',c:['Scikit-learn','CatBoost','Optuna','SHAP','Deep Learning','CNN','NLP','Computer Vision','Transformers']},
+ {t:'MLOps',c:['MLflow','Kedro','FastAPI','Docker','GitHub Actions','pytest','CI/CD','Render','Hugging Face Spaces']},
+ {t:{fr:'IA générative & LLM',en:'Generative AI & LLM'},c:['LLM','RAG','LangChain','LangGraph','Groq','ChromaDB','HuggingFace','Streamlit']},
+ {t:'Data Engineering',c:['Pandas','SQL','SQLite','Dash','Apache Spark','MongoDB']},
+ {t:{fr:'Langages & infrastructure',en:'Languages & infrastructure'},c:['Python','PyTorch','TensorFlow','Keras','OpenCV','Git','Linux','HPC / SLURM','R']},
+ {t:{fr:'Langues',en:'Languages'},c:[{fr:'Français (natif)',en:'French (native)'},{fr:'Anglais B2 (lecture scientifique)',en:'English B2 (scientific reading)'}]}
+];
+
+/* ---------- RENDER PROJECTS ---------- */
+var grid=document.getElementById('pgrid');
+function renderProjects(){
+  grid.innerHTML='';
+  P.forEach(function(p,i){
+    var el=document.createElement('article');el.className='card proj reveal in';el.dataset.id=p.id;
+    var title=L(p.title),tag=L(p.tag);
+    var prev='<div class="prev">'+(p.img?'<img src="'+p.img+'" alt="" onload="this.parentNode.classList.add(\'has\')" onerror="this.remove()">':'')+
+      (p.live?'<span class="live">LIVE</span>':'')+
+      '<div class="mini">'+p.mini.map(function(m,j){return '<span>'+m+'</span>'+(j<p.mini.length-1?'<em>→</em>':'')}).join('')+'</div>'+
+      (p.live?'<button class="play" data-open="'+p.id+'" data-pane="demo"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11" fill="#ffffff33"/><path d="M10 8l6 4-6 4z"/></svg>'+L({fr:'Tester en direct',en:'Try it live'})+'</button>':'')+'</div>';
+    var body='<div class="pbody"><div class="ptag">'+tag+' · '+p.year+'</div><h3>'+title+'</h3>'+
+      '<div class="pk"><b>'+L({fr:'Problème',en:'Problem'})+'</b><span>'+L(p.prob)+'</span>'+
+      '<b>'+L({fr:'Approche',en:'Approach'})+'</b><span>'+L(p.app)+'</span></div>'+
+      '<div class="res">✓ '+L(p.res)+'</div>'+
+      '<div class="pact">'+
+        (p.live?'<button class="btn primary" data-open="'+p.id+'" data-pane="demo">▶ '+L({fr:'Tester en direct',en:'Try it live'})+'</button>':'')+
+        '<button class="btn" data-open="'+p.id+'" data-pane="arch">'+L({fr:'Architecture',en:'Architecture'})+'</button>'+
+        '<a class="btn" href="'+p.gh+'" target="_blank" rel="noopener">GitHub ↗</a>'+
+      '</div></div>';
+    el.innerHTML=prev+body;grid.appendChild(el);
+  });
+}
+
+/* ---------- MODAL ---------- */
+var modal=document.getElementById('modal'),frame=document.getElementById('frame'),loading=document.getElementById('loading'),cur=null,loadTimer=null;
+function setPane(name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.dataset.pane===name)});
+  document.getElementById('paneDemo').classList.toggle('on',name==='demo');
+  document.getElementById('paneArch').classList.toggle('on',name==='arch');
+}
+function renderArch(p){
+  var flow=document.getElementById('flow');flow.innerHTML='';
+  p.flow.forEach(function(s,i){
+    var b=document.createElement('button');b.className='node';
+    b.innerHTML='<small>'+L(s.k)+'</small>'+L(s.t);
+    b.addEventListener('click',function(){pick(i)});
+    flow.appendChild(b);
+    if(i<p.flow.length-1){var a=document.createElement('span');a.className='arrow';a.textContent='→';flow.appendChild(a)}
+  });
+  document.getElementById('archChips').innerHTML=p.tags.slice(0,12).map(function(t){return '<span class="chip">'+t+'</span>'}).join('');
+  function pick(i){
+    flow.querySelectorAll('.node').forEach(function(n,j){n.classList.toggle('on',j===i)});
+    document.getElementById('detail').innerHTML='<b>'+L(p.flow[i].k)+'</b> · '+L(p.flow[i].t)+'<br>'+L(p.flow[i].d);
+  }
+  pick(0);
+}
+function openModal(id,pane){
+  var p=P.filter(function(x){return x.id===id})[0];cur=p;
+  document.getElementById('mTitle').textContent=L(p.title);
+  var demoTab=document.querySelector('.tab[data-pane="demo"]');
+  demoTab.style.display=p.live?'':'none';
+  document.getElementById('mOpen').style.display=p.live?'':'none';
+  if(!p.live)pane='arch';
+  renderArch(p);setPane(pane);
+  modal.classList.add('open');document.body.style.overflow='hidden';
+  if(p.live){
+    var hb=document.getElementById('hintbar');hb.innerHTML=p.hint?L(p.hint):'';hb.style.display=p.hint?'':'none';
+    document.getElementById('mOpen').href=p.live;document.getElementById('mOpen2').href=p.live;
+    loading.classList.remove('hide');
+    frame.onload=function(){clearTimeout(loadTimer);loading.classList.add('hide')};
+    frame.src=p.live;
+    loadTimer=setTimeout(function(){loading.classList.add('hide')},65000);
+  }
+}
+function closeModal(){modal.classList.remove('open');document.body.style.overflow='';frame.src='about:blank';clearTimeout(loadTimer)}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-open]');
+  if(b){openModal(b.dataset.open,b.dataset.pane||'demo')}
+  var t=e.target.closest('.tab');if(t){setPane(t.dataset.pane)}
+});
+document.getElementById('mClose').addEventListener('click',closeModal);
+modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))closeModal()});
+
+/* ---------- SKILLS ---------- */
+var sk=document.getElementById('sk'),active=null;
+function renderSkills(){
+  sk.innerHTML='';
+  SK.forEach(function(g){
+    var c=document.createElement('div');c.className='card reveal in';
+    c.innerHTML='<h3>'+L(g.t)+'</h3><div class="chips">'+g.c.map(function(s){
+      if(typeof s==='object')return '<span class="chip">'+L(s)+'</span>';
+      return '<button class="chip'+(active===s?' on':'')+'" data-skill="'+s+'">'+s+'</button>'}).join('')+'</div>';
+    sk.appendChild(c);
+  });
+}
+sk.addEventListener('click',function(e){
+  var b=e.target.closest('[data-skill]');if(!b)return;
+  active=(active===b.dataset.skill)?null:b.dataset.skill;
+  renderSkills();highlight();
+  if(active)document.getElementById('projets').scrollIntoView({behavior:'smooth'});
+});
+function highlight(){
+  document.querySelectorAll('.proj').forEach(function(el){
+    var p=P.filter(function(x){return x.id===el.dataset.id})[0];
+    var m=active&&p.tags.indexOf(active)>-1;
+    el.classList.toggle('hit',!!m);el.classList.toggle('dim',!!active&&!m);
+  });
+  var n=document.getElementById('skNote');
+  if(!n){n=document.createElement('p');n.id='skNote';n.className='note';grid.parentNode.insertBefore(n,grid)}
+  n.innerHTML=active?('<b>'+active+'</b> : '+L({fr:'projets qui l\'utilisent surlignés. ',en:'projects using it highlighted. '})+'<a href="#" id="clr">'+L({fr:'Effacer',en:'Clear'})+'</a>'):'';
+  var c=document.getElementById('clr');if(c)c.addEventListener('click',function(e){e.preventDefault();active=null;renderSkills();highlight()});
+}
+
+/* ---------- LANG / THEME ---------- */
+var typedWords={fr:['Data Scientist','ML Engineer','MLOps Engineer','LLM & RAG'],en:['Data Scientist','ML Engineer','MLOps Engineer','LLM & RAG']};
+function renderAll(){renderProjects();renderSkills();highlight();}
+function applyLang(l){
+  root.lang=l;document.getElementById('langBtn').textContent=(l==='fr')?'EN':'FR';
+  document.title=(l==='fr')?'Omer Boueke | IA, Machine Learning, MLOps':'Omer Boueke | AI, Machine Learning, MLOps';
+  renderAll();if(modal.classList.contains('open')&&cur){renderArch(cur)}
+}
+var lang=sg('lang')||((navigator.language||'fr').toLowerCase().indexOf('fr')===0?'fr':'en');
+document.getElementById('langBtn').addEventListener('click',function(){lang=root.lang==='fr'?'en':'fr';ss('lang',lang);applyLang(lang)});
+var th=sg('theme');if(th)root.setAttribute('data-theme',th);
+document.getElementById('themeBtn').addEventListener('click',function(){var n=root.getAttribute('data-theme')==='dark'?'light':'dark';root.setAttribute('data-theme',n);ss('theme',n)});
+applyLang(lang);
+
+/* ---------- TYPED ---------- */
+(function(){
+  var el=document.getElementById('typed'),w=0,c=0,del=false;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent='Data Scientist · ML Engineer · MLOps';return}
+  function tick(){
+    var word=typedWords.fr[w];
+    el.textContent=word.slice(0,c);
+    if(!del&&c<word.length){c++;setTimeout(tick,85)}
+    else if(!del){del=true;setTimeout(tick,1300)}
+    else if(c>0){c--;setTimeout(tick,40)}
+    else{del=false;w=(w+1)%typedWords.fr.length;setTimeout(tick,250)}
+  }tick();
+})();
+
+/* ---------- REVEAL / COUNTERS / RACE ---------- */
+function fmt(v,dec){return v.toLocaleString(root.lang==='fr'?'fr-FR':'en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})}
+function count(el){
+  var to=parseFloat(el.dataset.to),dec=parseInt(el.dataset.dec||0),pre=el.dataset.pre||'',suf=el.dataset.suf||'',t0=null;
+  function step(t){if(!t0)t0=t;var k=Math.min((t-t0)/1400,1),e=1-Math.pow(1-k,3);el.textContent=pre+fmt(to*e,dec)+suf;if(k<1)requestAnimationFrame(step)}
+  requestAnimationFrame(step);
+}
+var io=new IntersectionObserver(function(es){es.forEach(function(en){
+  if(!en.isIntersecting)return;en.target.classList.add('in');
+  if(en.target.id==='metrics')en.target.querySelectorAll('.n').forEach(count);
+  if(en.target.id==='raceCard')document.getElementById('race').classList.add('go');
+  io.unobserve(en.target);
+})},{threshold:.25});
+document.querySelectorAll('.reveal').forEach(function(e){io.observe(e)});
+
+/* ---------- COPY EMAIL ---------- */
+document.getElementById('copyMail').addEventListener('click',function(){
+  var m='bouekeomerbocassa@gmail.com',t=document.getElementById('toast');
+  function ok(){t.textContent=L({fr:'Email copié',en:'Email copied'});t.classList.add('on');setTimeout(function(){t.classList.remove('on')},1800)}
+  try{navigator.clipboard.writeText(m).then(ok,function(){location.href='mailto:'+m})}catch(e){location.href='mailto:'+m}
+});
+})();
+</script>
+</body>
+</html>
