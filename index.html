@@ -436,6 +436,8 @@ var P=[
   prob:{fr:'Intégrer un LLM dans une application documentaire en limitant les hallucinations, et mesurer la qualité des réponses.',en:'Integrate an LLM into a document application while limiting hallucinations, and measure answer quality.'},
   app:{fr:'Pipeline RAG agentique avec LangGraph (3 nœuds), ChromaDB, embeddings HuggingFace, LLM Groq, interface Streamlit.',en:'Agentic RAG pipeline with LangGraph (3 nodes), ChromaDB, HuggingFace embeddings, Groq LLM, Streamlit UI.'},
   res:{fr:'Évaluation maison : Faithfulness 0,67, Answer Relevancy 0,95.',en:'In-house evaluation: Faithfulness 0.67, Answer Relevancy 0.95.'},
+  newtab:true,
+  note:{fr:'S\'ouvre dans un nouvel onglet : le téléversement de PDF ne fonctionne pas dans une fenêtre intégrée. Téléverse un PDF (contrat, rapport, cours…), attends le traitement, puis pose tes questions.',en:'Opens in a new tab: PDF upload does not work inside an embedded window. Upload a PDF (contract, report, course…), wait for processing, then ask your questions.'},
   hint:{fr:'<b>Comment tester :</b> téléverse un PDF (contrat, rapport, cours…) dans la barre latérale, attends le traitement, puis pose tes questions sur le document.',en:'<b>How to test:</b> upload a PDF (contract, report, course…) in the sidebar, wait for processing, then ask questions about the document.'},
   tags:['LangChain','LangGraph','Groq','ChromaDB','HuggingFace','Streamlit','Docker','RAG','LLM','NLP','Python'],
   gh:'https://github.com/Bokassa09/rag-assistant',
@@ -495,13 +497,13 @@ function renderProjects(){
     var prev='<div class="prev">'+(p.img?'<img src="'+p.img+'" alt="" onload="this.parentNode.classList.add(\'has\')" onerror="this.remove()">':'')+
       (p.live?'<span class="live">LIVE</span>':'')+
       '<div class="mini">'+p.mini.map(function(m,j){return '<span>'+m+'</span>'+(j<p.mini.length-1?'<em>→</em>':'')}).join('')+'</div>'+
-      (p.live?'<button class="play" data-open="'+p.id+'" data-pane="demo"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11" fill="#ffffff33"/><path d="M10 8l6 4-6 4z"/></svg>'+L({fr:'Tester en direct',en:'Try it live'})+'</button>':'')+'</div>';
+      (p.live?'<button class="play" data-open="'+p.id+'" data-pane="demo"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11" fill="#ffffff33"/><path d="M10 8l6 4-6 4z"/></svg>'+L({fr:'Tester en direct',en:'Try it live'})+(p.newtab?' ↗':'')+'</button>':'')+'</div>';
     var body='<div class="pbody"><div class="ptag">'+tag+' · '+p.year+'</div><h3>'+title+'</h3>'+
       '<div class="pk"><b>'+L({fr:'Problème',en:'Problem'})+'</b><span>'+L(p.prob)+'</span>'+
       '<b>'+L({fr:'Approche',en:'Approach'})+'</b><span>'+L(p.app)+'</span></div>'+
-      '<div class="res">✓ '+L(p.res)+'</div>'+
+      '<div class="res">✓ '+L(p.res)+'</div>'+(p.note?'<div class="note" style="margin-top:10px">ℹ '+L(p.note)+'</div>':'')+
       '<div class="pact">'+
-        (p.live?'<button class="btn primary" data-open="'+p.id+'" data-pane="demo">▶ '+L({fr:'Tester en direct',en:'Try it live'})+'</button>':'')+
+        (p.live?'<button class="btn primary" data-open="'+p.id+'" data-pane="demo">▶ '+L({fr:'Tester en direct',en:'Try it live'})+(p.newtab?' ↗':'')+'</button>':'')+
         '<button class="btn" data-open="'+p.id+'" data-pane="arch">'+L({fr:'Architecture',en:'Architecture'})+'</button>'+
         '<a class="btn" href="'+p.gh+'" target="_blank" rel="noopener">GitHub ↗</a>'+
       '</div></div>';
@@ -553,7 +555,11 @@ function openModal(id,pane){
 function closeModal(){modal.classList.remove('open');document.body.style.overflow='';frame.src='about:blank';clearTimeout(loadTimer)}
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-open]');
-  if(b){openModal(b.dataset.open,b.dataset.pane||'demo')}
+  if(b){
+    var pr=P.filter(function(x){return x.id===b.dataset.open})[0];
+    if(pr&&pr.newtab&&(b.dataset.pane||'demo')==='demo'){window.open(pr.live,'_blank','noopener');}
+    else{openModal(b.dataset.open,b.dataset.pane||'demo')}
+  }
   var t=e.target.closest('.tab');if(t){setPane(t.dataset.pane)}
 });
 document.getElementById('mClose').addEventListener('click',closeModal);
